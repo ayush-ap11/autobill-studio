@@ -2,6 +2,7 @@
   "name": "autobill-studio",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
@@ -11,7 +12,8 @@
   "dependencies": {
     "@types/bcryptjs": "^2.4.6",
     "bcryptjs": "^3.0.2",
-    "mongoose": "^8.18.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.18.1",
     "next": "15.5.2",
     "react": "19.1.0",
     "react-dom": "19.1.0"
@@ -19,6 +21,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
