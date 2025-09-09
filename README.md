@@ -2,7 +2,62 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+## Autobill Studio - Project Documentation & Changelog
+
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+## Project Structure & Key Steps
+
+Below is a step-by-step summary of the main features, files, and changes made so far, with file paths for reference:
+
+### 1. Project Initialization
+- Bootstrapped with `create-next-app` (Next.js)
+- Initial files: `package.json`, `tsconfig.json`, `next.config.ts`, `postcss.config.mjs`, `eslint.config.mjs`, etc.
+
+### 2. MongoDB Integration
+- **Database connection utility:**
+	- `lib/db.ts` — Handles MongoDB connection using Mongoose.
+
+### 3. Models (Mongoose Schemas)
+- **Company model:**
+	- `models/Company.ts` — Company schema with fields like name, gstin, email, phone, address, logoUrl, bankDetails, and status.
+- **Customer model:**
+	- `models/Customer.ts` — Customer schema linked to Company.
+- **Invoice model:**
+	- `models/Invoice.ts` — Invoice schema with items, taxes, status, and pre-save hook for invoice number.
+- **Item model:**
+	- `models/Item.ts` — Item schema for products/services.
+- **User model:**
+	- `models/User.ts` — User schema with password hashing and roles.
+
+### 4. Authentication & Authorization
+- **JWT-based authentication helper:**
+	- `lib/auth.ts` — Extracts companyId from JWT in headers or cookies.
+
+### 5. API Routes
+- **Company registration:**
+	- `app/api/auth/register/route.ts` — Registers a new company (pending approval).
+- **Google OAuth:**
+	- `app/api/auth/google/route.ts` — Redirects to Google OAuth consent screen.
+	- `app/api/auth/google/callback/route.ts` — Handles Google OAuth callback, verifies company, issues JWT, sets cookie.
+- **Company profile (me):**
+	- `app/api/company/me/route.ts` — Get and update current company details (protected route).
+
+### 6. App Directory & UI
+- **App entry and layout:**
+	- `app/page.tsx`, `app/layout.tsx`, `app/globals.css`, `app/favicon.ico`
+- **Fonts:**
+	- `app/ui/fonts.ts` — Font configuration.
+
+### 7. Public Assets
+- **SVGs and images:**
+	- `public/file.svg`, `public/globe.svg`, `public/next.svg`, `public/vercel.svg`, `public/window.svg`
+
+---
+
+## How to Run
+
+ First, run the development server:
 
 ```bash
 npm run dev
@@ -16,21 +71,4 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

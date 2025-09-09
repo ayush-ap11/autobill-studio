@@ -2,27 +2,14 @@ import { NextResponse } from "next/server";
 import dbConnect from "@/lib/db";
 import Company from "@/models/Company";
 import jwt from "jsonwebtoken";
-// import { Company } from "@/models/Company";
+import { getCompanyId } from "@/lib/auth";
 
 const JWT_SECRET = process.env.JWT_SECRET || "";
-
-function getCompanyIdFromAuthHeader(req: Request): string | null {
-  const auth = req.headers.get("authorization") || "";
-  if (!auth) return null;
-  const [scheme, token] = auth.split(" ");
-  if (scheme !== "Bearer" || !token) return null;
-  try {
-    const payload = jwt.verify(token, JWT_SECRET) as any;
-    return payload.companyId || null;
-  } catch {
-    return null;
-  }
-}
 
 // GET /api/company/me - get current company details
 export async function GET(req: Request) {
   try {
-    const companyId = getCompanyIdFromAuthHeader(req);
+    const companyId = getCompanyId(req);
     if (!companyId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -46,7 +33,7 @@ export async function GET(req: Request) {
 // PUT /api/company/me - update company details
 export async function PUT(req: Request) {
   try {
-    const companyId = getCompanyIdFromAuthHeader(req);
+    const companyId = getCompanyId(req);
     if (!companyId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
