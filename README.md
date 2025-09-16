@@ -73,30 +73,30 @@ Autobill Studio is a **multi-tenant SaaS application** that enables companies to
 ### ⏳ Remaining Routes to Implement
 
 #### Auth (Login/Logout)
-- `POST /api/auth/login` — `app/api/auth/login/route.ts`  
+- `POST /api/auth/login` — `app/api/auth/login/route.ts`  - ✅🧪
   *Handles login for both Owner and SuperAdmin using Email + Password.  
    - For Owners: login with the company email registered during company creation.  
    - For SuperAdmin: login with SuperAdmin credentials (requires OTP if enabled).*
 
-- `POST /api/auth/register-superadmin` — `app/api/auth/register-superadmin/route.ts`  
+- `POST /api/auth/register-superadmin` — `app/api/auth/register-superadmin/route.ts`  - ✅🧪
   *Registers a new SuperAdmin account. This is separate from company registration.* 🚧 *Remaining to implement.*
 
 ---
 
 #### Customers (Company-Scoped)
-- **POST & GET** `/api/customers` — `app/api/customers/route.ts`  
+- **POST & GET** `/api/customers` — `app/api/customers/route.ts`  - ✅🧪
   Should allow company to add new customers and list all customers.  
 
-- **PUT & DELETE** `/api/customers/[id]` — `app/api/customers/[id]/route.ts`  
+- **PUT & DELETE** `/api/customers/[id]` — `app/api/customers/[id]/route.ts`  - ✅🧪
   Should allow updating or deleting a customer by ID (only within the company scope).  
 
 ---
 
 #### Goods/Services
-- **POST & GET** `/api/goods` — `app/api/goods/route.ts`  
+- **POST & GET** `/api/goods` — `app/api/goods/route.ts`  - ✅🧪
   Should allow adding new products/services and listing them.  
 
-- **PUT & DELETE** `/api/goods/[id]` — `app/api/goods/[id]/route.ts`  
+- **PUT & DELETE** `/api/goods/[id]` — `app/api/goods/[id]/route.ts`  - ✅🧪
   Should allow updating or deleting a product/service by ID.  
 
 ---
@@ -112,12 +112,12 @@ Autobill Studio is a **multi-tenant SaaS application** that enables companies to
   Should generate and return a downloadable PDF of the invoice.  
 
 - **POST** `/api/invoices/[id]/email` — `app/api/invoices/[id]/email/route.ts`  
-  Should send invoice PDF via email to customer.  
+  Should send invoice PDF via email to customer.  -  future development
 
 ---
 
 #### Admin (Super Admin)
-- **GET** `/api/admin/companies` — `app/api/admin/companies/route.ts`  
+- **GET** `/api/admin/companies` — `app/api/admin/companies/route.ts`  - ✅🧪
   Should return a list of all registered companies for monitoring.  
 
 

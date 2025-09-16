@@ -44,4 +44,4 @@ OwnerSchema.methods.comparePassword = async function (
   return bcrypt.compare(candidate, this.password);
 };
 
-export const User = model<IOwner>("User", OwnerSchema);
+export const Owner = model<IOwner>("Owner", OwnerSchema);

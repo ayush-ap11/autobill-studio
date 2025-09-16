@@ -34,3 +34,35 @@ export function getCompanyId(req: Request): string | null {
     return null;
   }
 }
+
+/**
+ * Extract and verify JWT payload from Authorization header or cookies
+ */
+export function getTokenPayload(req: Request): any | null {
+  try {
+    // 1. Check Authorization header
+    const authHeader = req.headers.get("authorization") || "";
+    let token: string | undefined;
+    if (authHeader) {
+      const [scheme, value] = authHeader.split(" ");
+      if (scheme === "Bearer" && value) token = value;
+    }
+    // 2. Fallback to cookie
+    if (!token) {
+      const cookieHeader = req.headers.get("cookie");
+      if (cookieHeader) {
+        const cookies = Object.fromEntries(
+          cookieHeader.split(";").map((c) => {
+            const [key, val] = c.trim().split("=");
+            return [key, decodeURIComponent(val)];
+          })
+        );
+        token = cookies.auth_token;
+      }
+    }
+    if (!token) return null;
+    return jwt.verify(token, JWT_SECRET);
+  } catch {
+    return null;
+  }
+}
