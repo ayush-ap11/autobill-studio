@@ -35,6 +35,7 @@ Below is a step-by-step summary of the main features, files, and changes made so
 	- `lib/auth.ts` — Extracts companyId from JWT in headers or cookies.
 
 ### 5. API Routes
+#### Implemented Routes
 - **Company registration:**
 	- `app/api/auth/register/route.ts` — Registers a new company (pending approval).
 - **Google OAuth:**
@@ -42,6 +43,42 @@ Below is a step-by-step summary of the main features, files, and changes made so
 	- `app/api/auth/google/callback/route.ts` — Handles Google OAuth callback, verifies company, issues JWT, sets cookie.
 - **Company profile (me):**
 	- `app/api/company/me/route.ts` — Get and update current company details (protected route).
+
+#### Pending Routes to Implement
+- **Send company approval & login link (Admin only):**
+	- **POST** `/api/auth/send-login` — `app/api/auth/send-login/route.ts`
+- **Credentials login:**
+	- **POST** `/api/auth/login` — `app/api/auth/login/route.ts`
+- **Logout:**
+	- **POST** `/api/auth/logout` — `app/api/auth/logout/route.ts`
+
+#### Customer Management (company-scoped)
+- **Create & List Customers:**
+	- **POST** `/api/customers` & **GET** `/api/customers` — `app/api/customers/route.ts`
+- **Update & Delete Customer:**
+	- **PUT** `/api/customers/[id]` & **DELETE** `/api/customers/[id]` — `app/api/customers/[id]/route.ts`
+
+#### Goods/Services Management
+- **Create & List Goods/Services:**
+	- **POST** `/api/goods` & **GET** `/api/goods` — `app/api/goods/route.ts`
+- **Update & Delete Goods/Service:**
+	- **PUT** `/api/goods/[id]` & **DELETE** `/api/goods/[id]` — `app/api/goods/[id]/route.ts`
+
+#### Invoice Management
+- **Create & List Invoices:**
+	- **POST** `/api/invoices` & **GET** `/api/invoices` — `app/api/invoices/route.ts`
+- **Get Invoice Details:**
+	- **GET** `/api/invoices/[id]` — `app/api/invoices/[id]/route.ts`
+- **Download PDF:**
+	- **GET** `/api/invoices/[id]/pdf` — `app/api/invoices/[id]/pdf/route.ts`
+- **Send Invoice Email:**
+	- **POST** `/api/invoices/[id]/email` — `app/api/invoices/[id]/email/route.ts`
+
+#### Super Admin (SaaS Owner) Management
+- **List Companies:**
+	- **GET** `/api/admin/companies` — `app/api/admin/companies/route.ts`
+- **Approve/Reject Company:**
+	- **PUT** `/api/admin/companies/[id]/status` — `app/api/admin/companies/[id]/status/route.ts`
 
 ### 6. App Directory & UI
 - **App entry and layout:**
