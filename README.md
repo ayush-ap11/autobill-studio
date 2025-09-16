@@ -102,13 +102,16 @@ Autobill Studio is a **multi-tenant SaaS application** that enables companies to
 ---
 
 #### Invoices
-- **POST & GET** `/api/invoices` — `app/api/invoices/route.ts`  
+- **POST & GET** `/api/invoices` — `app/api/invoices/route.ts`  - ✅🧪
   Should create new invoices and list all invoices of a company.  
+  - GET: Returns list of invoices for authenticated company (sorted by date).
+  - POST: Creates a new invoice with computed totals (subtotal, tax, totalAmount) based on provided items, CGST, and SGST.
 
-- **GET** `/api/invoices/[id]` — `app/api/invoices/[id]/route.ts`  
-  Should fetch details of a specific invoice.  
+- **GET** `/api/invoices/[id]` — `app/api/invoices/[id]/route.ts`  - ✅🧪
+  Should fetch details of a specific invoice.
+  - GET: Returns the detailed invoice matching the provided ID for the authenticated company.
 
-- **GET** `/api/invoices/[id]/pdf` — `app/api/invoices/[id]/pdf/route.ts`  
+- **GET** `/api/invoices/[id]/pdf` — `app/api/invoices/[id]/pdf/route.ts` - ✅🧪 
   Should generate and return a downloadable PDF of the invoice.  
 
 - **POST** `/api/invoices/[id]/email` — `app/api/invoices/[id]/email/route.ts`  
@@ -140,3 +143,4 @@ yarn dev
 pnpm dev
 # or
 bun dev
+```
