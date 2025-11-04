@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import axios from "axios";
 import dbConnect from "@/lib/db";
 import Company from "@/models/Company";
+import { Owner } from "@/models/Owner";
 import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET!;
@@ -60,13 +61,16 @@ export async function GET(req: Request) {
       );
     }
 
-    // 3. Verify company exists & approved
+    // 3. Check for company
     await dbConnect();
+
     const company = await Company.findOne({ email }).lean();
 
     if (!company) {
       return NextResponse.json(
-        { error: "Company not found or not registered" },
+        {
+          error: "Company not found or not registered. Please register first.",
+        },
         { status: 404 }
       );
     }
@@ -77,18 +81,42 @@ export async function GET(req: Request) {
       );
     }
 
-    // 4. Sign JWT
+    // 4. Find or create Owner record linked to this company
+    let companyOwner = await Owner.findOne({ email });
+    if (!companyOwner) {
+      // Create owner with Google ID (no password needed for Google login)
+      companyOwner = await Owner.create({
+        companyId: company._id,
+        email,
+        name,
+        googleId: userInfoRes.data.sub || userInfoRes.data.id,
+        role: "owner",
+      });
+    } else {
+      // Update googleId if missing
+      if (!companyOwner.googleId) {
+        companyOwner.googleId = userInfoRes.data.sub || userInfoRes.data.id;
+        await companyOwner.save();
+      }
+    }
+
+    // 5. Sign JWT
     const token = jwt.sign(
-      { companyId: company._id.toString(), role: "admin" },
+      {
+        userId: companyOwner._id.toString(),
+        companyId: company._id.toString(),
+        role: "owner",
+      },
       JWT_SECRET,
       { expiresIn: "1d" }
     );
 
-    // 5. Set cookie
+    // 6. Set cookie
     const response = NextResponse.json({
       message: "Login successful",
       token,
       companyId: company._id,
+      role: "owner",
     });
     response.cookies.set({
       name: "auth_token",

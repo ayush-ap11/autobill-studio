@@ -48,7 +48,15 @@ export async function POST(req: Request) {
 
     // Set cookie and response
     const response = NextResponse.json(
-      { message: "Login successful", token, role: ownerDoc.role },
+      {
+        message: "Login successful",
+        token,
+        role: ownerDoc.role,
+        companyId:
+          ownerDoc.role === "owner" && ownerDoc.companyId
+            ? ownerDoc.companyId.toString()
+            : undefined,
+      },
       { status: 200 }
     );
 

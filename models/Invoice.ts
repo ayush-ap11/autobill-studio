@@ -36,7 +36,7 @@ const InvoiceSchema = new Schema<IInvoice>(
       ref: "Customer",
       required: true,
     },
-    invoiceNo: { type: String, required: true },
+    invoiceNo: { type: String, required: false },
     invoiceDate: { type: Date, default: Date.now },
     items: [
       {
@@ -66,15 +66,21 @@ const InvoiceSchema = new Schema<IInvoice>(
 // ✅ Pre-save hook: Auto-generate invoiceNo if not provided
 InvoiceSchema.pre<IInvoice>("save", async function (next) {
   if (!this.invoiceNo) {
-    const company = await mongoose.model("Company").findById(this.companyId);
+    const Company = mongoose.models.Company || mongoose.model("Company");
+    const company = await Company.findById(this.companyId);
     if (company) {
       // Example: Use company initials + timestamp
       const prefix = company.name.substring(0, 3).toUpperCase();
       this.invoiceNo = `${prefix}/${Date.now()}`;
+    } else {
+      // Fallback if company not found
+      this.invoiceNo = `INV/${Date.now()}`;
     }
   }
   next();
 });
 
 // 4. Model
-export const Invoice = model<IInvoice>("Invoice", InvoiceSchema);
+export const Invoice = mongoose.models.Invoice
+  ? mongoose.model<IInvoice>("Invoice")
+  : mongoose.model<IInvoice>("Invoice", InvoiceSchema);

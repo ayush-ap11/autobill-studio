@@ -9,11 +9,16 @@ export interface IItem extends Document {
   rate: number;
 }
 
-const ItemsSchema = new Schema<IItem>({
-  companyId: { type: Schema.Types.ObjectId, ref: "Company", required: true },
-  name: { type: String, required: true },
-  hsn: { type: String },
-  rate: { type: Number, required: true },
-}, { timestamps: true });
+const ItemsSchema = new Schema<IItem>(
+  {
+    companyId: { type: Schema.Types.ObjectId, ref: "Company", required: true },
+    name: { type: String, required: true },
+    hsn: { type: String },
+    rate: { type: Number, required: true },
+  },
+  { timestamps: true }
+);
 
-export const Items = model<IItem>("Items", ItemsSchema);
+export const Items =
+  (mongoose.models.Items as mongoose.Model<IItem>) ||
+  mongoose.model<IItem>("Items", ItemsSchema);

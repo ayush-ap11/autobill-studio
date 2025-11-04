@@ -52,34 +52,24 @@ Autobill Studio is a **multi-tenant SaaS application** that enables companies to
 ### ✅ Implemented Routes
 
 #### Auth
-- **POST** `/api/auth/register` — `app/api/auth/register/route.ts`  
-  Registers a new company and redirects directly to the dashboard.  
+- **POST** `/api/auth/register-company` — `app/api/auth/register-company/route.ts`  - ✅🧪
+  Registers a new company (no approval needed). Company can login immediately.
 
-- **GET** `/api/auth/google` & `/callback` — `app/api/auth/google/route.ts`, `app/api/auth/google/callback/route.ts`  
+- **GET** `/api/auth/google` & `/callback` — `app/api/auth/google/route.ts`, `app/api/auth/google/callback/route.ts`  - ✅🧪
   Handles Google OAuth login and sets JWT in cookies.  
 
-- **POST** `/api/auth/login` — `app/api/auth/login/route.ts`  
-  Allows company login with email + password.  
+- **POST** `/api/auth/login` — `app/api/auth/login/route.ts`  - ✅🧪
+  Allows company login with email + password.
 
-- **POST** `/api/auth/logout` — `app/api/auth/logout/route.ts`  
+- **POST** `/api/auth/logout` — `app/api/auth/logout/route.ts`  - ✅🧪
   Clears JWT cookies and logs the user out.  
 
 #### Company
-- **GET/PUT** `/api/company/me` — `app/api/company/me/route.ts`  
-  Get or update current company’s profile.  
+- **GET** `/api/company/me` — `app/api/company/me/route.ts`  - ✅🧪
+  Get logged-in company's profile.
 
----
-
-### ⏳ Remaining Routes to Implement
-
-#### Auth (Login/Logout)
-- `POST /api/auth/login` — `app/api/auth/login/route.ts`  - ✅🧪
-  *Handles login for both Owner and SuperAdmin using Email + Password.  
-   - For Owners: login with the company email registered during company creation.  
-   - For SuperAdmin: login with SuperAdmin credentials (requires OTP if enabled).*
-
-- `POST /api/auth/register-superadmin` — `app/api/auth/register-superadmin/route.ts`  - ✅🧪
-  *Registers a new SuperAdmin account. This is separate from company registration.* 🚧 *Remaining to implement.*
+- **PUT** `/api/company/me` — `app/api/company/me/route.ts`  - ✅🧪
+  Update logged-in company's profile.
 
 ---
 
@@ -104,24 +94,26 @@ Autobill Studio is a **multi-tenant SaaS application** that enables companies to
 #### Invoices
 - **POST & GET** `/api/invoices` — `app/api/invoices/route.ts`  - ✅🧪
   Should create new invoices and list all invoices of a company.  
-  - GET: Returns list of invoices for authenticated company (sorted by date).
-  - POST: Creates a new invoice with computed totals (subtotal, tax, totalAmount) based on provided items, CGST, and SGST.
+  - GET: Returns list of invoices for authenticated company with customer name, total amount, and date.
+  - POST: Creates a new invoice with `goods` array (containing `id` and `qty`) and `gstPercent`. Validates all items belong to the company and computes totals automatically.
 
 - **GET** `/api/invoices/[id]` — `app/api/invoices/[id]/route.ts`  - ✅🧪
   Should fetch details of a specific invoice.
-  - GET: Returns the detailed invoice matching the provided ID for the authenticated company.
+  - GET: Returns the detailed invoice matching the provided ID for the authenticated company with populated customer and items data.
 
-- **GET** `/api/invoices/[id]/pdf` — `app/api/invoices/[id]/pdf/route.ts` - ✅🧪 
-  Should generate and return a downloadable PDF of the invoice.  
+- **GET** `/api/invoices/[id]/pdf` — `app/api/invoices/[id]/pdf/route.ts`  - ✅🧪
+  Should generate and return a downloadable PDF of the invoice.
+  - GET: Generates and returns a downloadable PDF file for the invoice.
 
-- **POST** `/api/invoices/[id]/email` — `app/api/invoices/[id]/email/route.ts`  
-  Should send invoice PDF via email to customer.  -  future development
+- **POST** `/api/invoices/[id]/email` — `app/api/invoices/[id]/email/route.ts`  - ✅🧪
+  Should send invoice PDF via email to customer.
+  - POST: Sends invoice to customer email if it belongs to the authenticated company.
 
 ---
 
 #### Admin (Super Admin)
 - **GET** `/api/admin/companies` — `app/api/admin/companies/route.ts`  - ✅🧪
-  Should return a list of all registered companies for monitoring.  
+  Should return a list of all registered companies for monitoring.
 
 
 ---

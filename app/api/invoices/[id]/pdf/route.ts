@@ -2,20 +2,25 @@ import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/db";
 import { Invoice } from "@/models/Invoice";
 import { getCompanyId } from "@/lib/auth";
-// @ts-ignore: missing type declarations for pdfkit
 import PDFDocument from "pdfkit";
+import fs from "fs";
+import path from "path";
 
 interface Params {
   id: string;
 }
 
-export async function GET(req: NextRequest, { params }: { params: Params }) {
+export async function GET(
+  req: NextRequest,
+  context: { params: Promise<Params> }
+) {
   try {
     const companyId = getCompanyId(req);
     if (!companyId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const { id } = params;
+
+    const { id } = await context.params; // ✅ must await
     if (!id) {
       return NextResponse.json(
         { error: "Invoice ID is required" },
@@ -29,20 +34,32 @@ export async function GET(req: NextRequest, { params }: { params: Params }) {
       return NextResponse.json({ error: "Invoice not found" }, { status: 404 });
     }
 
-    // Generate PDF in-memory
+    // ✅ use custom font safely
+    const fontPath = path.join(
+      process.cwd(),
+      "public",
+      "fonts",
+      "Roboto-Regular.ttf"
+    );
+    const hasFont = fs.existsSync(fontPath);
+
     const pdfBuffer = await new Promise<Buffer>((resolve, reject) => {
       const doc = new PDFDocument({ size: "A4", margin: 50 });
       const buffers: Uint8Array[] = [];
       doc.on("data", (chunk: any) => buffers.push(chunk));
       doc.on("end", () => resolve(Buffer.concat(buffers)));
+      doc.on("error", reject);
 
-      // Header
+      if (hasFont) {
+        doc.registerFont("Custom", fontPath);
+        doc.font("Custom");
+      }
+
       doc
         .fontSize(20)
         .text(`Invoice: ${invoice.invoiceNo}`, { align: "center" });
       doc.moveDown();
 
-      // Invoice details
       doc.fontSize(12);
       doc.text(
         `Invoice Date: ${new Date(invoice.invoiceDate).toLocaleDateString()}`
@@ -50,7 +67,6 @@ export async function GET(req: NextRequest, { params }: { params: Params }) {
       doc.text(`Status: ${invoice.status}`);
       doc.moveDown();
 
-      // Items table
       doc.text("Items:", { underline: true });
       invoice.items.forEach((item: any) => {
         doc.text(
@@ -63,7 +79,6 @@ export async function GET(req: NextRequest, { params }: { params: Params }) {
       });
       doc.moveDown();
 
-      // Totals
       doc.text(`Subtotal: ₹${invoice.subtotal.toFixed(2)}`);
       doc.text(
         `Tax (${invoice.cgst}% + ${
@@ -85,7 +100,12 @@ export async function GET(req: NextRequest, { params }: { params: Params }) {
       },
     });
   } catch (error) {
-    console.error(`GET /api/invoices/${params.id}/pdf error:`, error);
+    let invoiceId = "unknown";
+    try {
+      const params = await context.params;
+      invoiceId = params.id;
+    } catch {}
+    console.error(`GET /api/invoices/${invoiceId}/pdf error:`, error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }

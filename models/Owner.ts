@@ -13,7 +13,13 @@ export interface IOwner extends Document {
 
 const OwnerSchema = new Schema<IOwner>(
   {
-    companyId: { type: Schema.Types.ObjectId, ref: "Company", required: true },
+    companyId: {
+      type: Schema.Types.ObjectId,
+      ref: "Company",
+      required: function (this: IOwner) {
+        return this.role === "owner";
+      },
+    },
     name: { type: String },
     email: { type: String, required: true, unique: true },
     password: { type: String },
@@ -44,4 +50,8 @@ OwnerSchema.methods.comparePassword = async function (
   return bcrypt.compare(candidate, this.password);
 };
 
-export const Owner = model<IOwner>("Owner", OwnerSchema);
+delete mongoose.models.Owner;
+
+export const Owner =
+  (mongoose.models.Owner as mongoose.Model<IOwner>) ||
+  mongoose.model<IOwner>("Owner", OwnerSchema);

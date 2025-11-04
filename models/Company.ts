@@ -8,7 +8,7 @@ export interface ICompany extends Document {
   email: string;
   phone: string;
   address: string;
-  logoUrl?: string; // ✅ logo image
+  logoUrl?: string; 
   bankDetails?: {
     accountNumber: string;
     ifsc: string;

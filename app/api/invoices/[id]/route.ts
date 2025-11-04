@@ -13,7 +13,7 @@ export async function GET(req: NextRequest, { params }: { params: Params }) {
     if (!companyId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const { id } = params;
+    const { id } = await params;
     if (!id) {
       return NextResponse.json(
         { error: "Invoice ID is required" },
@@ -22,7 +22,11 @@ export async function GET(req: NextRequest, { params }: { params: Params }) {
     }
 
     await dbConnect();
-    const invoice = await Invoice.findOne({ _id: id, companyId });
+    const invoice = await Invoice.findOne({ _id: id, companyId })
+      .populate("customerId")
+      .populate("items.itemId")
+      .lean();
+
     if (!invoice) {
       return NextResponse.json({ error: "Invoice not found" }, { status: 404 });
     }

@@ -5,13 +5,15 @@ import Company from "@/models/Company";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { name, gstin, email, phone, address, logoUrl, bankDetails } = body;
+    const { companyName, gstin, email, phone, address, logoUrl, bankDetails } =
+      body;
 
     // basic validation
-    if (!name || !gstin || !email || !phone || !address) {
+    if (!companyName || !gstin || !email || !phone || !address) {
       return NextResponse.json(
         {
-          error: "Missing required fields: name, gstin, email, phone, address",
+          error:
+            "Missing required fields: companyName, gstin, email, phone, address",
         },
         { status: 400 }
       );
@@ -30,22 +32,21 @@ export async function POST(req: Request) {
       );
     }
 
-    // create pending company
+    // create company (no approval required)
     const company = await Company.create({
-      name,
+      name: companyName,
       gstin,
       email,
       phone,
       address,
       logoUrl: logoUrl || undefined,
       bankDetails: bankDetails || undefined,
-      status: "pending",
+      status: "approved",
     });
 
     return NextResponse.json(
       {
-        message: "Registration submitted, waiting for approval.",
-        companyId: company._id,
+        message: "Registration successful.",
       },
       { status: 201 }
     );
